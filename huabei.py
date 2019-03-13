@@ -159,5 +159,48 @@ plt.show()
 
 # 是否吃土，使用花呗还款情况模拟
 # 整理几个约束条件
+# 每月先还贷款，在消费
+# 每月的支出除还款外，都可以使用花呗头指
+# 当这个月的收入小于等于需要还款的金额，代表你要吃土
+# 花呗信用总额度为1.5万
+# 当月需要借贷花呗的金额 = 月初余额 + 月收入 - 本月需要还花呗 > 15000
 
-# 第一次更新测试
+# 创建120个月每月的收入、支出、月初余额、本月需要还花呗
+
+income = final_income(10000, 1500)['月净收入'].tolist()
+expense = final_expense()['月总支出'].tolist()
+saving = [0 for i in range(120)]
+debt = [0 for i in range(120)]
+
+print('前6个月的月收入，月支出，月初余额（未计算），本月需要还花呗（为计算）数据分别为：\n')
+print(income[:6])
+print(expense[:6])
+print(saving[:6])
+print(debt[:6])
+
+# 第二个月推导
+if income[0] >= expense[0]:
+    '''
+    第一个月收入大于等于支出：
+    第二个月月初余额= 第一个月收入 - 第一个月支出
+    第二个月需要还花呗 = 0
+    '''
+    saving[1] = income[0] - expense[0]
+    debt[1] = 0
+else:
+    '''
+    第一个月收入小于支出：
+    第二个月月初余额= 0
+    第二个月需要还花呗 = 第一个月收入 - 第一个月支出
+    '''
+    saving[1] = 0
+    debt[1] = expense[0] - income[0]
+
+print(income[:2])
+print(expense[:2])
+print(saving[:2])
+print(debt[:2])
+
+
+# 构建函数模拟
+
