@@ -93,7 +93,7 @@ result = final_income(10000, 1500)
 result['月净收入'].iloc[:12].plot(kind='bar', figsize=(12, 4), color='Green')
 plt.title('月净收入情况 - 前12月')
 plt.grid()
-plt.show()
+# plt.show()
 print(result.head(5))
 
 # 基本生活支出
@@ -104,7 +104,7 @@ general_expense = pd.Series(np.random.randint(3000, 3501, size=120))
 plt.title('基本生活支出', fontproperties=font_set)
 plt.hist(general_expense, bins=30)
 plt.grid()
-plt.show()
+# plt.show()
 # print(general_expense)
 
 shopping = pd.Series(np.random.normal(400, 1200, size=120))
@@ -155,7 +155,7 @@ plt.title('月总支出情况 - 前十二个月')
 plt.grid()
 print('#########')
 print(result.head(7))
-plt.show()
+# plt.show()
 
 # 是否吃土，使用花呗还款情况模拟
 # 整理几个约束条件
@@ -201,6 +201,109 @@ print(expense[:2])
 print(saving[:2])
 print(debt[:2])
 
-
 # 构建函数模拟
+income = final_income(10000, 1500)['月净收入'].tolist()
+expense = final_expense()['月总支出'].tolist()
+saving = [0 for i in range(120)]
+debt = [0 for i in range(120)]
 
+
+def case_a():
+    month = []
+    data = []
+    for i in range(120):
+        money = saving[i] + income[i] - expense[i] - debt[i]
+        if -money > 15000:
+            # 当月还需借花呗金额大于15000  破产
+            print('第%i个月花呗救不了我了，要破产了,欠钱%i！\n' % (i+1, money))
+            break
+        else:
+            # 当月还需借花呗金额小于15000  继续浪
+            if money > 0:
+                # 有结余
+                saving[i+1] = money
+            else:
+                # 有负债
+                debt[i+1] = -money
+        month.append(i+1)
+        data.append([income[i], expense[i], debt[i], saving[i+1], debt[i+1]])
+    result_a = pd.DataFrame(data, columns=['月收入', '月支出', '本月需要还花呗', '本月余钱', '欠债'], index=month)
+    result_a.index.name = '月份'
+    # 将数据放入dataframe中返回
+    return result_a
+
+
+# case_a()
+# 第一回合，不使用分期情况下， 进行1万次模拟，查看破产月份
+
+month_case_a = []
+for i in range(10): # 10为模拟次数
+    print('正在进行第%i次模拟' % (i+1))
+    income = final_income(10000, 1500)['月净收入'].tolist()
+    expense = final_expense()['月总支出'].tolist()
+    saving = [0 for i in range(120)]
+    debt = [0 for i in range(120)]
+    result_a = case_a().index.max()
+    month_case_a.append(result_a)
+result_last = pd.Series(month_case_a)
+
+# 几月10000次模拟的破查月份， 制作直方图
+plt.figure(figsize=(12, 4))
+result_last.hist(bins=15)
+plt.title('第一回合，不可分期模拟结果')
+#plt.show()
+
+
+# 第二回合模拟分期
+# 需要计算花呗得利息，分期得基本都在10%左右年化
+income = final_income(10000, 1500)['月净收入'].tolist()
+expense = final_expense()['月总支出'].tolist()
+saving = [0 for i in range(120)]
+debt = [0 for i in range(120)]
+
+# 构建函数模拟--分期三个月
+def case_b():
+    month = []
+    data = []
+    for i in range(120):
+        money = saving[i] + income[i] - expense[i] - debt[i]
+        if -money > 15000:
+            # 当月还需借花呗金额大于15000  破产
+            print('第%i个月花呗救不了我了，要破产了,欠钱%i！\n' % (i+1, money))
+            break
+        else:
+            # 当月还需借花呗金额小于15000  继续浪
+            if money > 0:
+                # 有结余
+                saving[i+1] = money
+            else:
+                # 有负债
+                money_per = abs(money)*(1+0.025)/3  # 分期三个月
+                debt[i+1] = debt[i+1] + money_per
+                debt[i+2] = debt[i+2] + money_per
+                debt[i+3] = debt[i+3] + money_per
+        month.append(i+1)
+        data.append([income[i], expense[i], debt[i], saving[i+1], debt[i+1]])
+    result_b = pd.DataFrame(data, columns=['月收入', '月支出', '本月需要还花呗', '本月余钱', '欠债'], index=month)
+    result_b.index.name = '月份'
+    # 将数据放入dataframe中返回
+    return result_b
+
+month_case_b = []
+
+# 几月10000次模拟的破查月份， 制作直方图
+for i in range(1000): # 10为模拟次数
+    print('正在进行第%i次模拟' % (i+1))
+    income = final_income(10000, 1500)['月净收入'].tolist()
+    expense = final_expense()['月总支出'].tolist()
+    saving = [0 for i in range(120)]
+    debt = [0 for i in range(120)]
+    result_b = case_a().index.max()
+    month_case_b.append(result_b)
+result_last_b = pd.Series(month_case_b)
+
+
+plt.figure(figsize=(12, 4))
+result_last_b.hist(bins=15)
+plt.title('第二回合，分期三次模拟结果')
+plt.show()
