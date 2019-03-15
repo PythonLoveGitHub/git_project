@@ -169,43 +169,33 @@ print(result.head(7))
 
 income = final_income(10000, 1500)['月净收入'].tolist()
 expense = final_expense()['月总支出'].tolist()
-saving = [0 for i in range(120)]
-debt = [0 for i in range(120)]
-
-print('前6个月的月收入，月支出，月初余额（未计算），本月需要还花呗（为计算）数据分别为：\n')
-print(income[:6])
-print(expense[:6])
-print(saving[:6])
-print(debt[:6])
+saving = [0 for i in range(121)]
+debt = [0 for i in range(132)]
+#
+# print('前6个月的月收入，月支出，月初余额（未计算），本月需要还花呗（为计算）数据分别为：\n')
+# print(income[:6])
+# print(expense[:6])
+# print(saving[:6])
+# print(debt[:6])
 
 # 第二个月推导
-if income[0] >= expense[0]:
-    '''
-    第一个月收入大于等于支出：
-    第二个月月初余额= 第一个月收入 - 第一个月支出
-    第二个月需要还花呗 = 0
-    '''
-    saving[1] = income[0] - expense[0]
-    debt[1] = 0
-else:
-    '''
-    第一个月收入小于支出：
-    第二个月月初余额= 0
-    第二个月需要还花呗 = 第一个月收入 - 第一个月支出
-    '''
-    saving[1] = 0
-    debt[1] = expense[0] - income[0]
+# if income[0] >= expense[0]:
+#     '''
+#     第一个月收入大于等于支出：
+#     第二个月月初余额= 第一个月收入 - 第一个月支出
+#     第二个月需要还花呗 = 0
+#     '''
+#     saving[1] = income[0] - expense[0]
+#     debt[1] = 0
+# else:
+#     '''
+#     第一个月收入小于支出：
+#     第二个月月初余额= 0
+#     第二个月需要还花呗 = 第一个月收入 - 第一个月支出
+#     '''
+#     saving[1] = 0
+#     debt[1] = expense[0] - income[0]
 
-print(income[:2])
-print(expense[:2])
-print(saving[:2])
-print(debt[:2])
-
-# 构建函数模拟
-income = final_income(10000, 1500)['月净收入'].tolist()
-expense = final_expense()['月总支出'].tolist()
-saving = [0 for i in range(120)]
-debt = [0 for i in range(120)]
 
 
 def case_a():
@@ -222,44 +212,18 @@ def case_a():
             if money > 0:
                 # 有结余
                 saving[i+1] = money
+                debt[i+1] = 0
             else:
                 # 有负债
                 debt[i+1] = -money
+                saving[i+1] = 0
         month.append(i+1)
         data.append([income[i], expense[i], debt[i], saving[i+1], debt[i+1]])
-    result_a = pd.DataFrame(data, columns=['月收入', '月支出', '本月需要还花呗', '本月余钱', '欠债'], index=month)
+    result_a = pd.DataFrame(data, columns=['月收入', '月支出', '本月需要还花呗', '本月余钱', '本月欠债'], index=month)
     result_a.index.name = '月份'
     # 将数据放入dataframe中返回
     return result_a
 
-
-# case_a()
-# 第一回合，不使用分期情况下， 进行1万次模拟，查看破产月份
-
-month_case_a = []
-for i in range(10): # 10为模拟次数
-    print('正在进行第%i次模拟' % (i+1))
-    income = final_income(10000, 1500)['月净收入'].tolist()
-    expense = final_expense()['月总支出'].tolist()
-    saving = [0 for i in range(120)]
-    debt = [0 for i in range(120)]
-    result_a = case_a().index.max()
-    month_case_a.append(result_a)
-result_last = pd.Series(month_case_a)
-
-# 几月10000次模拟的破查月份， 制作直方图
-plt.figure(figsize=(12, 4))
-result_last.hist(bins=15)
-plt.title('第一回合，不可分期模拟结果')
-#plt.show()
-
-
-# 第二回合模拟分期
-# 需要计算花呗得利息，分期得基本都在10%左右年化
-income = final_income(10000, 1500)['月净收入'].tolist()
-expense = final_expense()['月总支出'].tolist()
-saving = [0 for i in range(120)]
-debt = [0 for i in range(120)]
 
 # 构建函数模拟--分期三个月
 def case_b():
@@ -276,34 +240,218 @@ def case_b():
             if money > 0:
                 # 有结余
                 saving[i+1] = money
+                debt[i+1] = 0
             else:
                 # 有负债
                 money_per = abs(money)*(1+0.025)/3  # 分期三个月
+                saving[i+1] = 0
                 debt[i+1] = debt[i+1] + money_per
                 debt[i+2] = debt[i+2] + money_per
                 debt[i+3] = debt[i+3] + money_per
         month.append(i+1)
         data.append([income[i], expense[i], debt[i], saving[i+1], debt[i+1]])
-    result_b = pd.DataFrame(data, columns=['月收入', '月支出', '本月需要还花呗', '本月余钱', '欠债'], index=month)
+    result_b = pd.DataFrame(data, columns=['月收入', '月支出', '本月需要还花呗', '本月余钱', '本月欠债'], index=month)
     result_b.index.name = '月份'
     # 将数据放入dataframe中返回
     return result_b
 
-month_case_b = []
 
-# 几月10000次模拟的破查月份， 制作直方图
-for i in range(1000): # 10为模拟次数
-    print('正在进行第%i次模拟' % (i+1))
-    income = final_income(10000, 1500)['月净收入'].tolist()
-    expense = final_expense()['月总支出'].tolist()
-    saving = [0 for i in range(120)]
-    debt = [0 for i in range(120)]
-    result_b = case_a().index.max()
-    month_case_b.append(result_b)
-result_last_b = pd.Series(month_case_b)
+# 构建函数模拟-分期六个月
+def case_c():
+    # 创建两个空列表，用于存放月份和每月数据
+    month = []
+    data = []
+    for i in range(120):
+        money = income[i] + saving[i] - expense[i] - debt[i]
+        if -money > 15000:
+            print('第%i个月花呗救不了我了，要破产了,欠钱%i！\n' % (i+1, money))
+            break
+        else:
+            if money > 0:
+                # 有结余
+                saving[i+1] = money
+                debt[i+1] = 0
+            else:
+                # 需要使用花呗
+                money_per = (abs(money)*(1+0.045))/6
+                saving[i+1] = 0
+                debt[i+1] = debt[i+1] + money_per
+                debt[i+2] = debt[i+2] + money_per
+                debt[i+3] = debt[i+3] + money_per
+                debt[i+4] = debt[i+4] + money_per
+                debt[i+5] = debt[i+5] + money_per
+                debt[i+6] = debt[i+6] + money_per
+        month.append(i+1)
+        data.append([income[i], expense[i], debt[i], saving[i], debt[i+1]])
+    result_c = pd.DataFrame(data, columns=['月收入', '月开销', '本月需还花呗', '本月结余', '本月欠债'], index=month)
+    result_c.index.name = '月份'
+    return result_c
 
 
-plt.figure(figsize=(12, 4))
-result_last_b.hist(bins=15)
-plt.title('第二回合，分期三次模拟结果')
+# 构建函数模拟-分期九个月
+def case_d():
+    # 创建两个空列表，用于存放月份和每月数据
+    month = []
+    data = []
+    for i in range(120):
+        money = income[i] + saving[i] - expense[i] - debt[i]
+        print('第几个月%i,结余%i' % (i,money))
+        print(debt[120])
+        if -money > 15000:
+            print('第%i个月花呗救不了我了，要破产了,欠钱%i！\n' % (i+1, money))
+            break
+        else:
+            if money > 0:
+                # 有结余
+                saving[i+1] = money
+                debt[i+1] = 0
+            else:
+                # 需要使用花呗
+                money_per = (abs(money)*(1+0.065))/9   # 分期九个月
+                saving[i+1] = 0
+                debt[i+1] = debt[i+1] + money_per
+                debt[i+2] = debt[i+2] + money_per
+                debt[i+3] = debt[i+3] + money_per
+                debt[i+4] = debt[i+4] + money_per
+                debt[i+5] = debt[i+5] + money_per
+                debt[i+6] = debt[i+6] + money_per
+                debt[i+7] = debt[i+7] + money_per
+                debt[i+8] = debt[i+8] + money_per
+                debt[i+9] = debt[i+9] + money_per
+        month.append(i+1)
+        data.append([income[i], expense[i], debt[i], saving[i], debt[i+1]])
+    result_d = pd.DataFrame(data, columns=['月收入', '月开销', '本月需还花呗', '本月结余', '本月欠债'], index=month)
+    result_d.index.name = '月份'
+    return result_d
+
+
+# 构建函数模拟-分期十二个月
+def case_e():
+    # 创建两个空列表，用于存放月份和每月数据
+    month = []
+    data = []
+    for i in range(120):
+        money = income[i] + saving[i] - expense[i] - debt[i]
+        if -money > 15000:
+            print('第%i个月花呗救不了我了，要破产了,欠钱%i！\n' % (i+1, money))
+            break
+        else:
+            if money > 0:
+                # 有结余
+                saving[i+1] = money
+                debt[i+1] = 0
+            else:
+                # 需要使用花呗
+                money_per = (abs(money)*(1+0.065))/9   # 分期十二个月
+                saving[i+1] = 0
+                debt[i+1] = debt[i+1] + money_per
+                debt[i+2] = debt[i+2] + money_per
+                debt[i+3] = debt[i+3] + money_per
+                debt[i+4] = debt[i+4] + money_per
+                debt[i+5] = debt[i+5] + money_per
+                debt[i+6] = debt[i+6] + money_per
+                debt[i+7] = debt[i+7] + money_per
+                debt[i+8] = debt[i+8] + money_per
+                debt[i+9] = debt[i+9] + money_per
+                debt[i+10] = debt[i+10] + money_per
+                debt[i+11] = debt[i+11] + money_per
+                debt[i+12] = debt[i+12] + money_per
+        month.append(i+1)
+        data.append([income[i], expense[i], debt[i], saving[i], debt[i+1]])
+    result_e = pd.DataFrame(data, columns=['月收入', '月开销', '本月需还花呗', '本月结余', '本月欠债'], index=month)
+    result_e.index.name = '月份'
+    return result_e
+
+
+# month_case_a = []
+# for i in range(10000):
+#     print('正在进行第%i次模拟' % (i+1))
+#     income = final_income(10000, 1500)['月净收入'].tolist()
+#     expense = final_expense()['月总支出'].tolist()
+#     saving = [0 for i in range(121)]
+#     debt = [0 for i in range(132)]
+#     result_a = case_a().index.max()
+#     month_case_a.append(result_a)
+#
+# plt.figure(figsize=(12, 4))
+# result_hist_a = pd.Series(month_case_a)
+# result_hist_a.hist(bins=20)
+# plt.title('第一回合：不允许分期 - 模拟结果')
+# plt.show()
+#
+# month_case_b = []
+# for i in range(10000):
+#     print('正在进行第%i次模拟' % (i+1))
+#     income = final_income(10000, 1500)['月净收入'].tolist()
+#     expense = final_expense()['月总支出'].tolist()
+#     saving = [0 for i in range(121)]
+#     debt = [0 for i in range(132)]
+#     result_b = case_b().index.max()
+#     month_case_b.append(result_b)
+#
+# result_hist_b = pd.Series(month_case_b)
+# result_hist_b.hist(bins=20)
+# plt.title('第一回合：允许分期(三期) - 模拟结果')
+# plt.show()
+#
+# month_case_c = []
+# for i in range(10000):
+#     print('正在进行第%i次模拟' % (i+1))
+#     income = final_income(10000, 1500)['月净收入'].tolist()
+#     expense = final_expense()['月总支出'].tolist()
+#     saving = [0 for i in range(121)]
+#     debt = [0 for i in range(132)]
+#     result_c = case_c().index.max()
+#     month_case_c.append(result_c)
+#
+# result_hist_c = pd.Series(month_case_c)
+# result_hist_c.hist(bins=20)
+# plt.title('第一回合：允许分期(六期) - 模拟结果')
+# plt.show()
+#
+# month_case_d = []
+# for i in range(10000):
+#     print('正在进行第%i次模拟' % (i+1))
+#     income = final_income(10000, 1500)['月净收入'].tolist()
+#     expense = final_expense()['月总支出'].tolist()
+#     saving = [0 for i in range(121)]
+#     debt = [0 for i in range(132)]
+#     temp = case_d()
+#     result_d = temp.index.max()
+#     month_case_d.append(result_d)
+#
+# result_hist_d = pd.Series(month_case_d)
+# result_hist_d.hist(bins=20)
+# plt.title('第一回合：允许分期(九期) - 模拟结果')
+# plt.show()
+#
+# month_case_e = []
+# for i in range(10000):
+#     print('正在进行第%i次模拟' % (i+1))
+#     income = final_income(10000, 1500)['月净收入'].tolist()
+#     expense = final_expense()['月总支出'].tolist()
+#     saving = [0 for i in range(121)]
+#     debt = [0 for i in range(132)]
+#     result_e = case_e().index.max()
+#     month_case_e.append(result_e)
+#
+# result_hist_e = pd.Series(month_case_e)
+# result_hist_e.hist(bins=20)
+# plt.title('第一回合：允许分期(十二期) - 模拟结果')
+# plt.show()
+
+r1 = case_a()['本月欠债']
+r2 = case_b()['本月欠债']
+r3 = case_c()['本月欠债']
+r4 = case_d()['本月欠债']
+r5 = case_e()['本月欠债']
+
+df = pd.DataFrame({'不分期':r1, '分期三月':r2, '不分期六月':r3, '不分期九月':r4, '不分期十二月':r5})
+df.plot(kind='line', style = '-.', alpha=0.9, use_index=True, figsize=(12,4), legend=True, colormap='Accent')
+plt.title('不同分期负债积累')
+plt.grid()
 plt.show()
+
+
+
+
