@@ -524,82 +524,82 @@ def case_e():
     return result_e
 
 
-# month_case_a = []
-# for i in range(10000):
-#     print('正在进行第%i次模拟' % (i+1))
-#     income = final_income(10000, 1500)['月净收入'].tolist()
-#     expense = final_expense()['月总支出'].tolist()
-#     saving = [0 for i in range(121)]
-#     debt = [0 for i in range(132)]
-#     result_a = case_a().index.max()
-#     month_case_a.append(result_a)
-#
-# plt.figure(figsize=(12, 4))
-# result_hist_a = pd.Series(month_case_a)
-# result_hist_a.hist(bins=20)
-# plt.title('第一回合：不允许分期 - 模拟结果')
-# plt.show()
-#
-# month_case_b = []
-# for i in range(10000):
-#     print('正在进行第%i次模拟' % (i+1))
-#     income = final_income(10000, 1500)['月净收入'].tolist()
-#     expense = final_expense()['月总支出'].tolist()
-#     saving = [0 for i in range(121)]
-#     debt = [0 for i in range(132)]
-#     result_b = case_b().index.max()
-#     month_case_b.append(result_b)
-#
-# result_hist_b = pd.Series(month_case_b)
-# result_hist_b.hist(bins=20)
-# plt.title('第一回合：允许分期(三期) - 模拟结果')
-# plt.show()
-#
-# month_case_c = []
-# for i in range(10000):
-#     print('正在进行第%i次模拟' % (i+1))
-#     income = final_income(10000, 1500)['月净收入'].tolist()
-#     expense = final_expense()['月总支出'].tolist()
-#     saving = [0 for i in range(121)]
-#     debt = [0 for i in range(132)]
-#     result_c = case_c().index.max()
-#     month_case_c.append(result_c)
-#
-# result_hist_c = pd.Series(month_case_c)
-# result_hist_c.hist(bins=20)
-# plt.title('第一回合：允许分期(六期) - 模拟结果')
-# plt.show()
-#
-# month_case_d = []
-# for i in range(10000):
-#     print('正在进行第%i次模拟' % (i+1))
-#     income = final_income(10000, 1500)['月净收入'].tolist()
-#     expense = final_expense()['月总支出'].tolist()
-#     saving = [0 for i in range(121)]
-#     debt = [0 for i in range(132)]
-#     temp = case_d()
-#     result_d = temp.index.max()
-#     month_case_d.append(result_d)
-#
-# result_hist_d = pd.Series(month_case_d)
-# result_hist_d.hist(bins=20)
-# plt.title('第一回合：允许分期(九期) - 模拟结果')
-# plt.show()
-#
-# month_case_e = []
-# for i in range(10000):
-#     print('正在进行第%i次模拟' % (i+1))
-#     income = final_income(10000, 1500)['月净收入'].tolist()
-#     expense = final_expense()['月总支出'].tolist()
-#     saving = [0 for i in range(121)]
-#     debt = [0 for i in range(132)]
-#     result_e = case_e().index.max()
-#     month_case_e.append(result_e)
-#
-# result_hist_e = pd.Series(month_case_e)
-# result_hist_e.hist(bins=20)
-# plt.title('第一回合：允许分期(十二期) - 模拟结果')
-# plt.show()
+month_case_a = []
+for i in range(10000):
+    print('正在进行第%i次模拟' % (i+1))
+    income = final_income(10000, 1500)['月净收入'].tolist()
+    expense = final_expense()['月总支出'].tolist()
+    saving = [0 for i in range(121)]
+    debt = [0 for i in range(132)]
+    result_a = case_a().index.max()
+    month_case_a.append(result_a)
+
+plt.figure(figsize=(12, 4))
+result_hist_a = pd.Series(month_case_a)
+result_hist_a.hist(bins=20)
+plt.title('第一回合：不允许分期 - 模拟结果')
+plt.show()
+
+month_case_b = []
+for i in range(10000):
+    print('正在进行第%i次模拟' % (i+1))
+    income = final_income(10000, 1500)['月净收入'].tolist()
+    expense = final_expense()['月总支出'].tolist()
+    saving = [0 for i in range(121)]
+    debt = [0 for i in range(132)]
+    result_b = case_b().index.max()
+    month_case_b.append(result_b)
+
+result_hist_b = pd.Series(month_case_b)
+result_hist_b.hist(bins=20)
+plt.title('第一回合：允许分期(三期) - 模拟结果')
+plt.show()
+
+month_case_c = []
+for i in range(10000):
+    print('正在进行第%i次模拟' % (i+1))
+    income = final_income(10000, 1500)['月净收入'].tolist()
+    expense = final_expense()['月总支出'].tolist()
+    saving = [0 for i in range(121)]
+    debt = [0 for i in range(132)]
+    result_c = case_c().index.max()
+    month_case_c.append(result_c)
+
+result_hist_c = pd.Series(month_case_c)
+result_hist_c.hist(bins=20)
+plt.title('第一回合：允许分期(六期) - 模拟结果')
+plt.show()
+
+month_case_d = []
+for i in range(10000):
+    print('正在进行第%i次模拟' % (i+1))
+    income = final_income(10000, 1500)['月净收入'].tolist()
+    expense = final_expense()['月总支出'].tolist()
+    saving = [0 for i in range(121)]
+    debt = [0 for i in range(132)]
+    temp = case_d()
+    result_d = temp.index.max()
+    month_case_d.append(result_d)
+
+result_hist_d = pd.Series(month_case_d)
+result_hist_d.hist(bins=20)
+plt.title('第一回合：允许分期(九期) - 模拟结果')
+plt.show()
+
+month_case_e = []
+for i in range(10000):
+    print('正在进行第%i次模拟' % (i+1))
+    income = final_income(10000, 1500)['月净收入'].tolist()
+    expense = final_expense()['月总支出'].tolist()
+    saving = [0 for i in range(121)]
+    debt = [0 for i in range(132)]
+    result_e = case_e().index.max()
+    month_case_e.append(result_e)
+
+result_hist_e = pd.Series(month_case_e)
+result_hist_e.hist(bins=20)
+plt.title('第一回合：允许分期(十二期) - 模拟结果')
+plt.show()
 
 r1 = case_a()['本月欠债']
 r2 = case_b()['本月欠债']
